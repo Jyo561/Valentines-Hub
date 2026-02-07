@@ -140,37 +140,113 @@ fn quest_engine(props: &QuestProps) -> Html {
 // --- 4. BASE ROUTE (PORTAL) ---
 #[function_component(Home)]
 fn home() -> Html {
+    // 1. Define the Cheesy Persona List
+    // (Route, Icon, Cheesy Title, Indicative Subtitle, Storage Key)
     let personas = vec![
-        (Route::Mba, "📈", "MBA Aspirant", "Marketing & Strategy"),
-        (Route::Upsc, "🏛️", "UPSC Aspirant", "History & Polity"),
-        (Route::Jee, "⚛️", "JEE Aspirant", "Physics & Chemistry"),
-        (Route::Ca, "📊", "CA Aspirant", "Audit & Tax"),
-        (Route::Tech, "💻", "The Techie", "Git & SQL Code"),
+        (
+            Route::Mba, "📈", 
+            "The Strategic Partner", 
+            "Maximizing our Net Present Valentine (NPV)", 
+            "val_prog_mba"
+        ),
+        (
+            Route::Upsc, "🏛️", 
+            "The Constitutional Bond", 
+            "You are the Preamble to my life", 
+            "val_prog_upsc"
+        ),
+        (
+            Route::Jee, "⚛️", 
+            "The Molecular Attraction", 
+            "Stronger than a Triple Covalent Bond", 
+            "val_prog_jee"
+        ),
+        (
+            Route::Ca, "📊", 
+            "The Balanced Ledger", 
+            "Auditing my heart for your entry", 
+            "val_prog_ca"
+        ),
+        (
+            Route::Tech, "💻", 
+            "The Perfect Merge", 
+            "Zero conflicts in our source code", 
+            "val_prog_tech"
+        ),
     ];
 
     html! {
-        <div class="min-h-screen flex bg-[#1a0a0d] items-center justify-center p-6 text-center">
+        <div class="min-h-screen w-full bg-[#1a0a0d] flex flex-col items-center py-12 px-6 text-center">
             <div class="max-w-md w-full">
-                <h1 class="text-4xl font-bold text-[#ff4d6d] mb-2 italic tracking-tighter">{"VALENTINE_HUB"}</h1>
-                <p class="text-pink-500 text-xs tracking-widest uppercase mb-12 opacity-80">{"Initialize Persona Connection..."}</p>
-                <div class="grid gap-4">
-                    { for personas.into_iter().map(|(route, icon, label, desc)| html! {
-                        <Link<Route> to={route} classes="block p-5 bg-[#2d0f14] glow-card rounded-2xl text-left group border border-[#ff4d6d]/10 transition-all duration-300">
-                            <div class="flex items-center gap-4">
-                                <span class="text-3xl group-hover:scale-110 transition">{icon}</span>
-                                <div>
-                                    <div class="text-[#ffccd5] font-bold group-hover:text-[#ff4d6d] ">{label}</div>
-                                    <div class="text-[10px] text-rose-300/40 uppercase tracking-tighter">{desc}</div>
+                /* Title Section */
+                <h1 class="text-4xl font-bold text-[#ff4d6d] mb-2 italic tracking-tighter uppercase">{"Aspirant_Aura"}</h1>
+                <p class="text-[#ffccd5] text-[10px] tracking-[0.3em] uppercase mb-12 opacity-60">{"// select your destiny"}</p>
+                
+                /* Scrollable Grid Area */
+                <div class="grid gap-6 pb-16 w-full">
+                    { for personas.into_iter().map(|(route, icon, label, desc, storage_key)| {
+                        let solved_count = LocalStorage::get::<Vec<i32>>(storage_key).unwrap_or_default().len();
+                        let progress_pct = (solved_count as f32 / 8.0) * 100.0;
+                        let is_active = solved_count > 0;
+
+                        html! {
+                            <Link<Route> to={route} classes="block p-6 bg-[#2d0f14] glow-card rounded-2xl text-left group border border-[#ff4d6d]/10 transition-all duration-500 hover:-translate-y-1">
+                                <div class="flex items-start gap-4">
+                                    /* Icon with a romantic hover scale */
+                                    <span class="text-4xl group-hover:rotate-12 transition duration-500">{icon}</span>
+                                    
+                                    <div class="flex-grow">
+                                        <div class="flex justify-between items-start mb-1">
+                                            <div>
+                                                <div class="text-[#ffccd5] font-bold text-lg group-hover:text-[#ff4d6d] transition leading-tight">
+                                                    {label}
+                                                </div>
+                                                <div class="text-[10px] text-rose-300/40 italic mt-1 leading-tight">
+                                                    {desc}
+                                                </div>
+                                            </div>
+                                            /* Indicative Pulse */
+                                            if is_active {
+                                                <div class="w-2 h-2 rounded-full bg-[#ff4d6d] animate-pulse shadow-[0_0_8px_#ff4d6d]"></div>
+                                            }
+                                        </div>
+                                        
+                                        /* Indicative Progress Visual */
+                                        <div class="mt-5 space-y-1.5">
+                                            <div class="flex justify-between items-end">
+                                                <span class={format!("text-[8px] font-bold uppercase tracking-widest {}", if is_active { "text-[#ff4d6d]" } else { "text-white/10" })}>
+                                                    { if solved_count == 8 { "Fully Decoded" } else if is_active { "Syncing Heart..." } else { "Link Offline" } }
+                                                </span>
+                                                <span class="text-[9px] text-rose-300/20 font-mono">
+                                                    {format!("{:0>2}/08", solved_count)}
+                                                </span>
+                                            </div>
+                                            /* Thin, elegant progress line */
+                                            <div class="w-full bg-black/30 h-[1px] rounded-full overflow-hidden">
+                                                <div class="bg-gradient-to-r from-[#590d22] to-[#ff4d6d] h-full transition-all duration-1000 ease-in-out" 
+                                                     style={format!("width: {}%", progress_pct)}></div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link<Route>>
+                            </Link<Route>>
+                        }
                     })}
+                </div>
+                
+                /* Footer Visual */
+                <div class="mt-auto pt-8 flex flex-col items-center gap-2 opacity-30">
+                    <p class="text-[#ffccd5] text-[9px] uppercase tracking-[0.5em]">{"Connection Secure"}</p>
+                    <div class="flex gap-1">
+                        <div class="w-1 h-1 rounded-full bg-[#ff4d6d]"></div>
+                        <div class="w-1 h-1 rounded-full bg-[#ff4d6d]/60"></div>
+                        <div class="w-1 h-1 rounded-full bg-[#ff4d6d]/30"></div>
+                    </div>
                 </div>
             </div>
         </div>
     }
 }
-
 // --- 5. DATA GENERATORS ---
 fn get_mba() -> Vec<Challenge> {
     vec![
